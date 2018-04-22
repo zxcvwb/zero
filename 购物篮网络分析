@@ -1,0 +1,16 @@
+library(igraph)
+Data0<-read.table(file="购物篮数据.txt",header=TRUE,sep=",")
+Data<-as.matrix(data0[,-1,-7])
+#构建2模网络
+(Basket.2M<-graph.incidence(incidence = Data,directed = TRUE,mode = "out"))
+set.seed(12345)
+Rid<-igraph.sample(low=1,high=1000,length=20)#对网络做随机抽样，抽取20人
+Basket.2M.Sub<-graph.incidence(Basket.2M[Rid,1001:1011],directed=TRUE,mode="out") #构建随机子网
+V(Basket.2M.Sub)[V(Basket.2M.Sub)$type]$label<-colnames(Data)
+v(Basket.2M.Sub)[!V(Basket.2M.Sub)$type]$label<-as.vector(Data0[Rid,4])
+V(Basket.2M.Sub)$size<-10
+V(Basket.2M.Sub)[V(Basket.2M.Sub)$type]$size<-20
+V(Basket.2M.Sub)$label.cex<-0.7
+plot(Basket.2M.Sub,main="顾客与商品的2-模随机子网（性别喜好偏向）",edge.arrow.size=0.05)
+layout=layout.fruchterman.reingold(Basket.2M.Sub)
+vertex.color=ifelse(V(Basket.2M.Sub)$label=="M","red",ifelse(V(Basket.2M.Sub)$label=="F","green","yellow"))
